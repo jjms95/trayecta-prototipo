@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Trayecta · Prototipo navegable (Grupo 1 · Usabilidad)</title>
+<style>
+:root{--p:#0B6E4F;--p2:#12A37A;--pl:#E3F4EE;--ink:#14211C;--mut:#6B7A74;--line:#E4EAE7;--bg:#F5F8F7;--red:#D64545;--amb:#E8A317;--blue:#2F6FED}
+*{box-sizing:border-box;margin:0;padding:0;font-family:"Inter","Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+html,body{height:100%}
+body{background:linear-gradient(135deg,#0b3d2e,#0B6E4F 55%,#1c8f6b);display:flex;align-items:center;justify-content:center;gap:40px;color:var(--ink);min-height:100vh}
+.side{color:#e8f6f0;max-width:280px;font-size:14px;line-height:1.5}
+.side h1{font-size:26px;margin-bottom:8px}.side a{color:#fff}
+.side select{width:100%;padding:8px;border-radius:8px;margin-top:10px}
+.phone{width:390px;height:844px;border-radius:52px;background:#fff;position:relative;overflow:hidden;box-shadow:0 0 0 12px #111,0 0 0 14px #333,0 30px 80px rgba(0,0,0,.5)}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;background:#fff;animation:in .28s ease}
+@keyframes in{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+.sb{height:47px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:6px 30px 0;font-weight:600;font-size:15px;z-index:5}
+.sb .ic{display:flex;gap:6px;align-items:center}
+.sb.dark{color:#fff}
+.body{flex:1;overflow-y:auto;position:relative;scrollbar-width:none}
+.body::-webkit-scrollbar{display:none}
+.pad{padding:8px 22px 24px}
+.top{display:flex;align-items:center;gap:10px;padding:6px 16px 10px}
+.top h2{font-size:19px;flex:1}
+.back{width:38px;height:38px;border-radius:50%;border:none;background:var(--bg);font-size:20px;cursor:pointer}
+.btn{display:block;width:100%;padding:15px;border-radius:14px;border:none;font-size:16px;font-weight:600;cursor:pointer;margin-top:12px;text-align:center}
+.pri{background:var(--p);color:#fff}.sec{background:var(--pl);color:var(--p)}.ghost{background:none;color:var(--p)}
+.out{background:#fff;border:1.5px solid var(--line);color:var(--ink)}.danger{background:var(--red);color:#fff}.grey{background:#E9EDEB;color:var(--ink)}
+.btn.sm{padding:10px;font-size:14px;margin-top:0}
+label.f{display:block;font-size:13px;font-weight:600;color:var(--mut);margin:14px 0 6px}
+.in{width:100%;padding:14px;border:1.5px solid var(--line);border-radius:12px;font-size:15px;background:#fff;color:var(--ink)}
+.in.focus{border-color:var(--p);box-shadow:0 0 0 3px var(--pl)}
+.div{display:flex;align-items:center;gap:10px;color:var(--mut);font-size:13px;margin:16px 0 4px}.div:before,.div:after{content:"";flex:1;height:1px;background:var(--line)}
+.g{display:flex;align-items:center;justify-content:center;gap:10px}
+.link{color:var(--p);font-weight:600;cursor:pointer;font-size:14px;background:none;border:none}
+.center{text-align:center}
+.card{background:#fff;border-radius:16px;box-shadow:0 2px 14px rgba(10,40,30,.1);padding:14px}
+.list .it{display:flex;gap:12px;align-items:center;padding:13px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.av{width:42px;height:42px;border-radius:12px;background:var(--pl);display:flex;align-items:center;justify-content:center;font-size:20px;flex:none}
+.it b{display:block;font-size:15px}.it small{color:var(--mut);font-size:13px}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 0}
+.chip{flex:none;padding:8px 13px;border-radius:20px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.12);font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid transparent}
+.chip.on{background:var(--p);color:#fff}
+.chip.o{box-shadow:none;border-color:var(--line)}
+.nav{height:82px;flex:none;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding-top:8px;background:#fff;z-index:5}
+.nav div{display:flex;flex-direction:column;align-items:center;font-size:12px;color:var(--mut);cursor:pointer;gap:3px;font-weight:600;width:90px}
+.nav div span{font-size:22px;filter:grayscale(1);opacity:.6}
+.nav .on{color:var(--p)}.nav .on span{filter:none;opacity:1}
+.nav .on span{background:var(--pl);border-radius:14px;padding:0 16px}
+.map{position:absolute;inset:0}
+.map svg{width:100%;height:100%;display:block}
+.search{position:absolute;left:14px;right:14px;top:4px;z-index:3}
+.sbox{display:flex;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:13px 14px;box-shadow:0 3px 14px rgba(0,0,0,.16);font-size:15px;color:var(--mut);cursor:pointer}
+.sbox .avt{margin-left:auto;width:30px;height:30px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.fab{position:absolute;width:50px;height:50px;border-radius:50%;background:#fff;box-shadow:0 3px 12px rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;font-size:21px;cursor:pointer;z-index:3;border:none}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:24px 24px 0 0;box-shadow:0 -4px 24px rgba(0,0,0,.14);padding:10px 20px 18px;z-index:4}
+.grab{width:40px;height:5px;border-radius:3px;background:#D5DDD9;margin:0 auto 12px}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:20px;font-size:12px;font-weight:700}
+.ok{background:#E3F4EE;color:var(--p)}.warn{background:#FFF3DA;color:#9A6A00}.bad{background:#FDE7E7;color:var(--red)}.info{background:#E8EFFE;color:var(--blue)}
+.tabs{display:flex;background:var(--bg);border-radius:12px;padding:4px;gap:4px}
+.tabs div{flex:1;text-align:center;padding:9px 4px;border-radius:9px;font-size:13px;font-weight:600;color:var(--mut);cursor:pointer}
+.tabs .on{background:#fff;color:var(--p);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.route{border:1.5px solid var(--line);border-radius:16px;padding:13px;margin-top:10px;cursor:pointer}
+.route.sel{border-color:var(--p);background:#F4FBF8}
+.route .t{font-size:21px;font-weight:800}
+.meta{display:flex;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--mut);margin-top:6px}
+.tog{width:48px;height:28px;border-radius:14px;background:#CBD3CF;position:relative;flex:none;cursor:pointer}
+.tog:after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.tog.on{background:var(--p)}.tog.on:after{left:23px}
+.row{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.row .tx{flex:1}.row .tx b{display:block;font-size:15px}.row .tx small{color:var(--mut);font-size:12.5px}
+.turn{position:absolute;top:0;left:0;right:0;background:var(--p);color:#fff;padding:52px 20px 16px;z-index:4;border-radius:0 0 22px 22px}
+.turn .big{font-size:26px;font-weight:800;display:flex;align-items:center;gap:14px}
+.turn .arrow{font-size:40px;width:56px;height:56px;border-radius:14px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center}
+.inc{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
+.inc div{border:1.5px solid var(--line);border-radius:16px;padding:14px 4px;text-align:center;font-size:13px;font-weight:600;cursor:pointer}
+.inc div span{display:block;font-size:30px;margin-bottom:4px}
+.inc .on{border-color:var(--p);background:var(--pl);color:var(--p)}
+.toast{position:absolute;left:16px;right:16px;bottom:100px;background:#14211C;color:#fff;padding:14px 16px;border-radius:14px;font-size:14px;z-index:20;display:flex;gap:10px;align-items:center;animation:in .3s}
+.modal{position:absolute;inset:0;background:rgba(10,25,20,.45);z-index:15;display:flex;align-items:center;justify-content:center;padding:28px}
+.modal .card{width:100%;padding:22px}
+.photos{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:12px 0}
+.photos div{flex:none;width:120px;height:90px;border-radius:12px;background:linear-gradient(135deg,#9fd8c2,#3d9c7a);display:flex;align-items:flex-end;padding:6px;color:#fff;font-size:11px;font-weight:600}
+.acts{display:flex;justify-content:space-between;margin:14px 0}
+.acts div{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--p);cursor:pointer;width:70px}
+.acts div span{width:46px;height:46px;border-radius:50%;background:var(--pl);display:flex;align-items:center;justify-content:center;font-size:19px}
+.acts .main span{background:var(--p);color:#fff}
+.stars{color:#E8A317}
+.dev{position:absolute;top:50px;right:12px;z-index:30;background:rgba(20,33,28,.85);color:#9ff0cf;font:600 10.5px/1.3 ui-monospace,monospace;padding:5px 8px;border-radius:8px;max-width:220px;text-align:right;display:none}
+body.devon .dev{display:block}
+.devbtn{position:absolute;bottom:88px;right:10px;z-index:31;font:700 11px ui-monospace,monospace;background:rgba(11,110,79,.12);color:var(--p);border:1px solid rgba(11,110,79,.3);border-radius:10px;padding:3px 7px;cursor:pointer}
+.home-ind{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:#111;z-index:40}
+.logo{width:88px;height:88px;border-radius:26px;background:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+h3{font-size:16px;margin:16px 0 4px}
+p.m{color:var(--mut);font-size:14px;line-height:1.45}
+.radio{display:flex;align-items:center;gap:12px;padding:14px;border:1.5px solid var(--line);border-radius:14px;margin-top:10px;cursor:pointer}
+.radio.on{border-color:var(--p);background:#F4FBF8}
+.radio i{width:20px;height:20px;border-radius:50%;border:2px solid #AAB6B1;flex:none}
+.radio.on i{border:6px solid var(--p)}
+.check{width:22px;height:22px;border-radius:6px;border:2px solid #AAB6B1;flex:none}
+.check.on{background:var(--p);border-color:var(--p);position:relative}.check.on:after{content:"✓";color:#fff;position:absolute;left:3px;top:-2px;font-size:14px;font-weight:800}
+/* print mode: one screen per page */
+body.print{background:#fff;display:block}
+body.print .side,body.print .devbtn{display:none}
+body.print .phone{width:430px;height:932px;border-radius:0;box-shadow:none}
+body.print .screen{animation:none}
+@page{size:430pt 932pt;margin:0}
+body.print .phone{zoom:1.3333}
+</style></head>
+<body>
+<div class="side" id="side">
+<h1>Trayecta</h1>
+<p>Prototipo navegable · Usabilidad – Parcial 2<br>Grupo 1 · Universidad del Quindío<br><small>(nombre provisional)</small></p>
+<p style="margin-top:12px">Toca los botones dentro del teléfono para navegar. Pulsa <b>?</b> (o el botón «RQ» del teléfono) para ver el ID de pantalla y los requisitos que cubre.</p>
+<select id="jump" onchange="go(this.value)"></select>
+</div>
+<div class="phone" id="phone"></div>
+<script>
+const $=s=>document.querySelector(s);
+const state={mode:'Auto',route:0,inc:null,fav:'Guardados',voice:true,res:'Lista'};
+const SB=(dark)=>`<div class="sb ${dark?'dark':''}"><span>9:41</span><span class="ic">▂▄▆ <span style="font-size:13px">5G</span> <svg width="26" height="13"><rect x=".5" y=".5" width="22" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".5"/><rect x="2.5" y="2.5" width="17" height="8" rx="2" fill="currentColor"/><rect x="24" y="4" width="2" height="5" rx="1" fill="currentColor" opacity=".5"/></svg></span></div>`;
+const NAV=(t)=>`<div class="nav">${[['s009','🧭','Explorar'],['s025','⭐','Favoritos'],['s029','👤','Perfil']].map(([id,i,l])=>`<div class="${t==l?'on':''}" onclick="go('${id}')"><span>${i}</span>${l}</div>`).join('')}</div>`;
+const TOP=(t,b='back()',extra='')=>`<div class="top"><button class="back" onclick="${b}">‹</button><h2>${t}</h2>${extra}</div>`;
+const LOGO=`<svg width="56" height="56" viewBox="0 0 56 56"><path d="M28 4c-10 0-18 8-18 18 0 13 18 30 18 30s18-17 18-30C46 12 38 4 28 4z" fill="#0B6E4F"/><path d="M19 27l7-12 4 7 3-4 5 9" stroke="#fff" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+// Stylized map of Armenia, Quindío (fictional geometry)
+function MAP(o={}){const r=o.route;return `<div class="map"><svg viewBox="0 0 390 760" preserveAspectRatio="xMidYMid slice">
+<rect width="390" height="760" fill="#EEF1EC"/>
+<path d="M-20 520 C60 480 120 560 200 520 S330 430 420 470 L420 560 C330 520 270 600 200 610 S60 560 -20 610Z" fill="#D7EBDD"/>
+<rect x="232" y="150" width="120" height="90" rx="14" fill="#CFE8D4"/><text x="292" y="200" font-size="10" fill="#4C8B62" text-anchor="middle" font-weight="600">Parque de la Vida</text>
+<rect x="30" y="300" width="80" height="70" rx="10" fill="#CFE8D4"/><text x="70" y="340" font-size="9" fill="#4C8B62" text-anchor="middle" font-weight="600">Plaza de Bolívar</text>
+<path d="M-10 600 C80 560 150 640 230 590 S360 520 400 560" stroke="#A9D3F0" stroke-width="10" fill="none"/>
+<g stroke="#fff" stroke-linecap="round">
+<path d="M-10 120 L400 90" stroke-width="10"/><path d="M-10 270 L400 250" stroke-width="16"/><path d="M-10 420 L400 400" stroke-width="10"/><path d="M-10 690 L400 670" stroke-width="10"/>
+<path d="M60 -10 L80 770" stroke-width="10"/><path d="M180 -10 L195 770" stroke-width="18"/><path d="M300 -10 L320 770" stroke-width="10"/>
+<path d="M-10 40 L400 520" stroke-width="13"/>
+<g stroke-width="5" opacity=".9"><path d="M-10 190 L400 170"/><path d="M-10 345 L400 325"/><path d="M-10 500 L400 480"/><path d="M120 -10 L138 770"/><path d="M240 -10 L258 770"/><path d="M360 -10 L378 770"/></g>
+</g>
+<path d="M180 -10 L195 770" stroke="#FFD66B" stroke-width="5" opacity=".8"/>
+<path d="M-10 270 L400 250" stroke="#FFD66B" stroke-width="4" opacity=".7"/>
+${o.traffic!==false?`<path d="M187 140 L190 240" stroke="#D64545" stroke-width="6" stroke-linecap="round"/><path d="M190 240 L193 330" stroke="#E8A317" stroke-width="6" stroke-linecap="round"/><path d="M20 268 L120 262" stroke="#12A37A" stroke-width="6" stroke-linecap="round"/><path d="M230 255 L340 250" stroke="#D64545" stroke-width="6" stroke-linecap="round"/>`:''}
+<g font-size="10" fill="#7B8781" font-weight="600"><text x="200" y="60" transform="rotate(88 200 60)">Av. Bolívar</text><text x="20" y="262">Calle 21</text><text x="12" y="113">Calle 30</text><text x="80" y="140" transform="rotate(40 80 140)">Av. 19</text><text x="310" y="60" transform="rotate(88 310 60)">Cra. 14</text><text x="16" y="414">Calle 10</text><text x="40" y="560" fill="#4C8B62">Río Quindío</text></g>
+${r?`<path d="${r.alt||''}" stroke="#9BB3AA" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${r.d}" stroke="#0B6E4F" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${r.e[0]}" cy="${r.e[1]}" r="9" fill="#fff" stroke="#D64545" stroke-width="5"/>`:''}
+${o.pois!==false?`<g font-size="15" text-anchor="middle" style="cursor:pointer">${[['☕',110,215,'s012'],['⛽',270,320,''],['🍴',340,120,''],['🏥',45,460,''],['🎓',260,455,''],['🅿️',150,370,'']].map(([e,x,y,l])=>`<g onclick="go('s012')"><circle cx="${x}" cy="${y}" r="15" fill="#fff" stroke="#0B6E4F" stroke-width="2"/><text x="${x}" y="${y+5}">${e}</text></g>`).join('')}</g>`:''}
+${o.incident?`<g><circle cx="190" cy="200" r="15" fill="#E8A317"/><text x="190" y="206" font-size="15" text-anchor="middle">🚧</text></g>`:''}
+<circle cx="${o.me?o.me[0]:192}" cy="${o.me?o.me[1]:300}" r="30" fill="#2F6FED" opacity=".15"/><circle cx="${o.me?o.me[0]:192}" cy="${o.me?o.me[1]:300}" r="10" fill="#2F6FED" stroke="#fff" stroke-width="4"/>
+</svg></div>`}
+const R1={d:'M192 300 L190 250 L320 240 L328 330 L340 470',alt:'M192 300 L195 420 L330 400 L340 470',e:[340,470]};
+const RNAV={d:'M192 600 L190 400 L320 380 L330 200',alt:'',e:[330,200]};
+const field=(l,v,ph,t='text',f)=>`<label class="f">${l}</label><input class="in ${f?'focus':''}" type="${t}" value="${v||''}" placeholder="${ph||''}">`;
+
+const S={
+s001:{t:'Bienvenida',ui:'UI-001',rq:'RQ01, RQ02',h:()=>`<div class="screen" style="background:linear-gradient(170deg,#0B6E4F,#0a4f3a)">${SB(1)}<div class="body" style="display:flex;flex-direction:column;padding:0 26px 40px;color:#fff">
+<div style="flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center"><div class="logo">${LOGO}</div><h1 style="font-size:36px;margin-top:22px;letter-spacing:-.5px">Trayecta</h1><p style="opacity:.85;margin-top:8px;font-size:16px;line-height:1.5">Llega mejor por Armenia y el Quindío.<br>Tráfico en tiempo real, rutas y alertas.</p></div>
+<button class="btn" style="background:#fff;color:var(--p)" onclick="go('s003')">Iniciar sesión</button><button class="btn" style="background:rgba(255,255,255,.14);color:#fff;border:1.5px solid rgba(255,255,255,.4)" onclick="go('s002')">Registrarse</button>
+<p class="center" style="font-size:12px;opacity:.7;margin-top:18px">Al continuar aceptas los Términos y la Política de privacidad</p></div></div>`},
+s002:{t:'Registrarse',ui:'UI-002',rq:'RQ01',h:()=>`<div class="screen">${SB()}${TOP('Crear cuenta')}<div class="body pad" style="padding-top:0">
+<p class="m">Guarda tus lugares y preferencias de ruta.</p>
+${field('Nombre completo','Laura Gómez')}${field('Correo electrónico','laura.gomez@uqvirtual.edu.co','','email',1)}${field('Contraseña','••••••••','','password')}${field('Confirmar contraseña','••••••••','','password')}
+<p style="font-size:12px;color:var(--p);margin-top:8px">✓ Mínimo 8 caracteres · ✓ Las contraseñas coinciden</p>
+<button class="btn pri" onclick="go('s006')">Crear cuenta</button><div class="div">o</div>
+<button class="btn out g" onclick="go('s006')"><b style="color:#4285F4">G</b> Continuar con Google</button>
+<p class="center" style="margin-top:16px;font-size:14px">¿Ya tienes cuenta? <button class="link" onclick="go('s003')">Iniciar sesión</button></p></div></div>`},
+s003:{t:'Iniciar sesión',ui:'UI-003',rq:'RQ02',h:()=>`<div class="screen">${SB()}${TOP('Iniciar sesión')}<div class="body pad" style="padding-top:0">
+<p class="m">Bienvenido de nuevo 👋</p>
+${field('Correo electrónico','laura.gomez@uqvirtual.edu.co','','email')}${field('Contraseña','••••••••','','password',1)}
+<p style="text-align:right;margin-top:10px"><button class="link" onclick="go('s004')">¿Olvidaste tu contraseña?</button></p>
+<button class="btn pri" onclick="go('s006')">Iniciar sesión</button><div class="div">o</div>
+<button class="btn out g" onclick="go('s006')"><b style="color:#4285F4">G</b> Continuar con Google</button>
+<p class="center" style="margin-top:16px;font-size:14px">¿No tienes cuenta? <button class="link" onclick="go('s002')">Crear cuenta</button></p></div></div>`},
+s004:{t:'Recuperar contraseña',ui:'UI-004',rq:'RQ02 · punto de dolor',h:()=>`<div class="screen">${SB()}${TOP('Recuperar contraseña')}<div class="body pad">
+<div class="av" style="width:64px;height:64px;font-size:30px;border-radius:18px">🔑</div><h3>¿Olvidaste tu contraseña?</h3><p class="m">Te enviaremos un código de 6 dígitos a tu correo para restablecerla.</p>
+${field('Correo electrónico','laura.gomez@uqvirtual.edu.co','','email',1)}
+<button class="btn pri" onclick="go('s005')">Enviar código</button><button class="btn ghost" onclick="go('s003')">Cancelar</button></div></div>`},
+s005:{t:'Verificar código',ui:'UI-005',rq:'RQ02 · punto de dolor',h:()=>`<div class="screen">${SB()}${TOP('Verificar código')}<div class="body pad">
+<p class="m">Enviamos un código a <b>laura.gomez@uqvirtual.edu.co</b></p><label class="f">Código</label>
+<div style="display:flex;gap:8px">${'482917'.split('').map((c,i)=>`<div class="in center" style="font-size:22px;font-weight:700;padding:12px 0;${i==5?'border-color:var(--p)':''}">${c}</div>`).join('')}</div>
+${field('Nueva contraseña','••••••••••','','password')}
+<button class="btn pri" onclick="toast('Contraseña restablecida');go('s003')">Restablecer</button><button class="btn ghost">Reenviar código (0:42)</button></div></div>`},
+s006:{t:'Permiso de ubicación',ui:'UI-006',rq:'RQ05, RQ45',h:()=>`<div class="screen">${SB()}<div class="body pad" style="display:flex;flex-direction:column">
+<div style="height:250px;border-radius:24px;overflow:hidden;position:relative;margin-top:10px">${MAP({pois:false,traffic:false})}</div>
+<h2 style="margin-top:22px;font-size:24px">Usa tu ubicación para rutas desde donde estás</h2>
+<p class="m" style="margin-top:8px">Trayecta usa tu ubicación para calcular rutas desde tu posición, avisarte del tráfico cercano y mostrar lugares a tu alrededor. No la compartimos con terceros.</p>
+<div class="radio on" onclick="this.classList.add('on');this.nextElementSibling.classList.remove('on')"><i></i><div><b>Al usar la app</b><br><small class="m">Recomendado</small></div></div>
+<div class="radio" onclick="this.classList.add('on');this.previousElementSibling.classList.remove('on')"><i></i><div><b>Siempre</b><br><small class="m">Para alertas de llegada en segundo plano</small></div></div>
+<div style="flex:1"></div><button class="btn pri" onclick="go('s007')">Permitir</button><button class="btn ghost" onclick="go('s008')">Ahora no</button></div></div>`},
+s007:{t:'Permiso de notificaciones',ui:'UI-007',rq:'RQ06',h:()=>`<div class="screen">${SB()}<div class="body pad" style="display:flex;flex-direction:column">
+<div style="flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center"><div style="font-size:70px">🔔</div><h2 style="font-size:24px;margin-top:10px">Activa las notificaciones</h2><p class="m" style="margin-top:8px">Recibe alertas de tráfico, accidentes en tu ruta y aviso cuando estés llegando a tu destino.</p>
+<div class="card" style="text-align:left;margin-top:24px;display:flex;gap:10px"><div class="av">⚠️</div><div><b style="font-size:14px">Trayecta · ahora</b><br><small class="m">Accidente en Av. Bolívar. Te sugerimos la Cra. 14 (+2 min).</small></div></div></div>
+<button class="btn pri" onclick="go('s009')">Permitir</button><button class="btn ghost" onclick="go('s009')">Ahora no</button></div></div>`},
+s008:{t:'Ubicación desactivada',ui:'UI-008',rq:'RQ05',h:()=>`<div class="screen">${SB()}<div class="body pad" style="display:flex;flex-direction:column">
+<div style="text-align:center;margin-top:40px"><div style="font-size:64px">📍</div><h2 style="font-size:23px;margin-top:10px">Funciones limitadas sin ubicación</h2><p class="m" style="margin-top:8px">Puedes seguir usando Trayecta escribiendo tu punto de partida. Actívala cuando quieras en Perfil › Permisos.</p></div>
+${field('Origen manual','','Ej: Universidad del Quindío, Armenia','text',1)}
+<div style="flex:1"></div><button class="btn pri" onclick="go('s006')">Activar ubicación</button><button class="btn out" onclick="go('s009')">Continuar sin ubicación</button></div></div>`},
+s009:{t:'Home mapa · Explorar',ui:'UI-009',rq:'RQ07, RQ08, RQ46–RQ50',h:()=>`<div class="screen">${SB()}<div class="body" style="overflow:hidden">${MAP({incident:1})}
+<div class="search"><div class="sbox" onclick="go('s010')">🔍 <span>¿A dónde vas?</span><span class="avt">LG</span></div>
+<div class="chips" style="margin-top:10px">${['🍴 Restaurantes','⛽ Gasolineras','☕ Cafés','🅿️ Parqueaderos','🏥 Salud'].map((c,i)=>`<div class="chip" onclick="go('s011')">${c}</div>`).join('')}</div>
+<div style="display:flex;gap:8px;margin-top:10px"><span class="pill" style="background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.12)">⛅ 22° Armenia · lluvia 16:00</span><span class="pill bad" style="box-shadow:0 2px 8px rgba(0,0,0,.12)">🚧 Obra Av. Bolívar</span></div></div>
+<button class="fab" style="right:14px;bottom:200px" title="Capas">🗂️</button><button class="fab" style="right:14px;bottom:140px" onclick="toast('Centrado en tu ubicación')">◎</button>
+<button class="fab" style="left:14px;bottom:140px;background:#E8A317;color:#fff" onclick="go('s023')">⚠️</button>
+<div class="sheet" style="padding-bottom:14px"><div class="grab"></div><div style="display:flex;justify-content:space-between;align-items:center"><b>Destinos rápidos</b><button class="link" onclick="go('s025')">Ver todos</button></div>
+<div style="display:flex;gap:10px;margin-top:10px">${[['🏠','Casa','12 min'],['💼','Trabajo','18 min'],['🎓','U. Quindío','9 min']].map(([e,n,m])=>`<div class="card" style="flex:1;padding:10px;cursor:pointer" onclick="go('s015')"><div style="font-size:20px">${e}</div><b style="font-size:13px">${n}</b><br><small class="m">${m}</small></div>`).join('')}</div></div>
+</div>${NAV('Explorar')}</div>`},
+s010:{t:'Buscar lugar',ui:'UI-010',rq:'RQ09, RQ35',h:()=>`<div class="screen">${SB()}<div class="top"><button class="back" onclick="go('s009')">‹</button><input class="in focus" value="Café" style="flex:1"><button class="back">✕</button></div><div class="body pad" style="padding-top:0">
+<h3>Sugerencias</h3><div class="list">${[['☕','Café Quindío Plaza','Cra. 14 #18-20 · 1,2 km','s012'],['☕','Café de la Plaza de Bolívar','Calle 21 · 1,6 km','s012'],['🔍','Cafés cerca de ti','Ver todos los resultados','s011']].map(([e,n,d,l])=>`<div class="it" onclick="go('${l}')"><div class="av">${e}</div><div><b>${n}</b><small>${d}</small></div></div>`).join('')}</div>
+<h3 style="margin-top:22px">Búsquedas recientes</h3><div class="list">${[['Universidad del Quindío','Cra. 15 Calle 12N'],['Centro Comercial Unicentro','Av. Bolívar'],['Terminal de Transportes de Armenia','Calle 35']].map(([n,d])=>`<div class="it" onclick="go('s012')"><div class="av" style="background:var(--bg)">🕘</div><div><b>${n}</b><small>${d}</small></div></div>`).join('')}</div></div></div>`},
+s011:{t:'Resultados y filtros',ui:'UI-011',rq:'RQ08, RQ09, RQ10',h:()=>`<div class="screen">${SB()}${TOP('Cafés cerca')}<div class="body pad" style="padding-top:0">
+<div class="tabs"><div class="${state.res=='Lista'?'on':''}" onclick="state.res='Lista';go('s011')">Lista</div><div class="${state.res=='Mapa'?'on':''}" onclick="state.res='Mapa';go('s011')">Mapa</div></div>
+<div class="chips" style="margin:12px 0 4px"><div class="chip on">☕ Categoría</div><div class="chip o">≤ 2 km</div><div class="chip o">Abierto ahora</div><div class="chip o">★ 4+</div></div>
+${state.res=='Mapa'?`<div style="height:520px;border-radius:18px;overflow:hidden;position:relative;margin-top:10px">${MAP({})}</div>`:
+`<div class="list">${[['Café Quindío Plaza','1,2 km · Abierto hasta 20:00','4,7'],['Café de la Plaza','1,6 km · Abierto hasta 19:00','4,5'],['Juan Valdez Av. Bolívar','2,0 km · Abierto hasta 21:00','4,4'],['Tostadero La Montaña','2,4 km · Cierra pronto','4,8']].map(([n,d,r])=>`<div class="it" onclick="go('s012')"><div class="av" style="width:58px;height:58px;background:linear-gradient(135deg,#9fd8c2,#3d9c7a)"></div><div style="flex:1"><b>${n}</b><small>${d}</small><br><small class="stars">★ ${r}</small></div><span style="color:var(--mut)">›</span></div>`).join('')}</div>`}
+</div></div>`},
+s012:{t:'Detalle del lugar',ui:'UI-012',rq:'RQ11, RQ12, RQ33',h:()=>`<div class="screen">${SB()}<div class="body" style="overflow:hidden">${MAP({route:null})}
+<div class="sheet" style="top:150px;overflow-y:auto"><div class="grab"></div><div style="display:flex;align-items:flex-start"><div style="flex:1"><h2 style="font-size:22px">Café Quindío Plaza</h2><p class="m">Café · Cra. 14 #18-20, Armenia</p></div><button class="back" onclick="back()">✕</button></div>
+<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><span class="pill ok">● Abierto · cierra 20:00</span><span class="pill info">✔ Verificado · actualizado 20 oct 2026</span></div>
+<div class="acts"><div class="main" onclick="go('s015')"><span>➤</span>Cómo llegar</div><div onclick="toast('Llamando a (606) 741 2233…')"><span>📞</span>Llamar</div><div onclick="toast('Guardado en Favoritos')"><span>⭐</span>Guardar</div><div onclick="toast('Enlace copiado')"><span>↗</span>Compartir</div></div>
+<div class="photos"><div>Fachada</div><div style="background:linear-gradient(135deg,#f3c98b,#b7793a)">Interior</div><div style="background:linear-gradient(135deg,#c9b39a,#6e4a2c)">Café de origen</div></div>
+<div class="row" onclick="go('s013')" style="cursor:pointer"><div class="tx"><b><span class="stars">★★★★★</span> 4,7</b><small>312 valoraciones</small></div><button class="link">Ver valoraciones ›</button></div>
+<div class="row"><span>🕘</span><div class="tx"><b>Lun–Sáb 7:00–20:00</b><small>Dom 8:00–14:00</small></div></div>
+<div class="row"><span>📞</span><div class="tx"><b>(606) 741 2233</b></div></div>
+<div class="row"><span>📍</span><div class="tx"><b>1,2 km · 6 min en auto</b></div></div>
+<button class="btn ghost" style="color:var(--red)" onclick="go('s014')">Reportar dato incorrecto</button></div></div></div>`},
+s013:{t:'Valoraciones y reseñas',ui:'UI-013',rq:'RQ12',h:()=>`<div class="screen">${SB()}${TOP('Valoraciones')}<div class="body pad" style="padding-top:0">
+<div style="display:flex;gap:18px;align-items:center"><div class="center"><div style="font-size:44px;font-weight:800">4,7</div><div class="stars">★★★★★</div><small class="m">312 reseñas</small></div><div style="flex:1">${[5,4,3,2,1].map((n,i)=>`<div style="display:flex;align-items:center;gap:6px;font-size:12px;margin:3px 0">${n}<div style="flex:1;height:7px;background:var(--bg);border-radius:4px"><div style="height:100%;width:${[78,15,4,2,1][i]}%;background:var(--amb);border-radius:4px"></div></div></div>`).join('')}</div></div>
+${[['Andrés M.','hace 2 días','Excelente café de origen y muy buena atención. Hay parqueadero cerca.'],['Valentina R.','hace 1 semana','El horario de la app estaba correcto, llegué y estaba abierto 👍'],['Camilo T.','hace 3 semanas','Buen sitio para trabajar, wifi rápido.']].map(([n,f,t])=>`<div class="row" style="align-items:flex-start"><div class="av" style="border-radius:50%">${n[0]}</div><div class="tx"><b>${n} <span class="stars" style="font-size:12px">★★★★★</span></b><small>${f}</small><p style="font-size:14px;margin-top:4px">${t}</p></div></div>`).join('')}</div></div>`},
+s014:{t:'Reportar dato incorrecto',ui:'UI-014',rq:'RQ11 · punto de dolor',h:()=>`<div class="screen">${SB()}${TOP('Reportar dato incorrecto')}<div class="body pad" style="padding-top:0">
+<p class="m">Café Quindío Plaza · ¿Qué dato está mal?</p>
+${[['Horario',1],['Teléfono',0],['Ubicación en el mapa',0],['El lugar cerró',0]].map(([t,o])=>`<div class="radio ${o?'on':''}" onclick="document.querySelectorAll('.radio').forEach(x=>x.classList.remove('on'));this.classList.add('on')"><i></i><b>${t}</b></div>`).join('')}
+<label class="f">Comentario</label><textarea class="in" rows="3">Los domingos ahora abren hasta las 18:00.</textarea>
+<button class="btn pri" onclick="toast('Gracias, revisaremos el dato');go('s012')">Enviar</button><button class="btn ghost" onclick="go('s012')">Cancelar</button></div></div>`},
+s015:{t:'Planear ruta',ui:'UI-015',rq:'RQ13, RQ25, RQ27, RQ29, RQ31, RQ45',h:()=>`<div class="screen">${SB()}${TOP('Planear ruta','go(\'s009\')')}<div class="body pad" style="padding-top:0">
+<div class="card" style="display:flex;gap:12px;align-items:center"><div style="display:flex;flex-direction:column;align-items:center;gap:4px"><span style="color:var(--blue)">◉</span><span style="height:26px;border-left:2px dotted #AAB6B1"></span><span style="color:var(--red)">📍</span></div>
+<div style="flex:1"><label class="f" style="margin-top:0">Origen</label><div class="in" style="padding:10px">Mi ubicación · Calle 21 #15</div><label class="f" style="margin-top:8px">Destino</label><div class="in focus" style="padding:10px">Café Quindío Plaza</div></div><button class="back" onclick="toast('Origen y destino intercambiados')">⇅</button></div>
+<label class="f">Modo de transporte</label>${MODES()}
+<h3>Salida</h3><div class="chips"><div class="chip on">Ahora</div><div class="chip o">Programar…</div></div>
+<button class="btn pri" style="margin-top:24px" onclick="go('s016')">Calcular rutas</button>
+<h3 style="margin-top:22px">Recientes</h3><div class="list">${[['🎓','Universidad del Quindío'],['🛒','Unicentro Armenia']].map(([e,n])=>`<div class="it"><div class="av">${e}</div><b>${n}</b></div>`).join('')}</div></div></div>`},
+s016:{t:'Comparar rutas',ui:'UI-016',rq:'RQ14–RQ16, RQ26, RQ28, RQ30, RQ49 · punto de dolor RQ15',h:()=>{const rs=ROUTES[state.mode];return `<div class="screen">${SB()}<div class="body" style="overflow:hidden">
+<div style="height:300px;position:relative">${MAP({route:R1,pois:false})}<button class="fab" style="left:14px;top:6px;width:40px;height:40px" onclick="go('s015')">‹</button><button class="fab" style="right:14px;top:6px;width:40px;height:40px" onclick="go('s017')">⚙️</button></div>
+<div class="sheet" style="top:270px;overflow-y:auto;padding-bottom:90px"><div class="grab"></div>${MODES('s016')}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px"><b>${rs.length} rutas a Café Quindío Plaza</b><span class="pill info">⛅ Lluvia ligera</span></div>
+${rs.map((r,i)=>`<div class="route ${state.route==i?'sel':''}" onclick="state.route=${i};go('s016')"><div style="display:flex;justify-content:space-between;align-items:center"><span class="t">${r[0]}</span>${r[5]?`<span class="pill ok">${r[5]}</span>`:''}</div><div style="font-size:14px;margin-top:2px">${r[1]}</div><div class="meta"><span>📏 ${r[2]}</span><span>${r[3]}</span><span>${r[4]}</span></div>${r[6]?`<div class="pill warn" style="margin-top:8px">${r[6]}</div>`:''}</div>`).join('')}
+${state.mode=='Transporte'?`<button class="btn sec" onclick="go('s018')">Ver detalle transporte</button>`:''}</div>
+<div style="position:absolute;left:0;right:0;bottom:0;padding:10px 20px 26px;background:#fff;z-index:5;border-top:1px solid var(--line);display:flex;gap:10px"><button class="btn out sm" style="width:auto;padding:14px 16px" onclick="go('s017')">Opciones</button><button class="btn pri" style="margin:0" onclick="go('s019')">▶ Iniciar navegación</button></div></div></div>`}},
+s017:{t:'Opciones de ruta',ui:'UI-017',rq:'RQ04, RQ15, RQ26, RQ28',h:()=>`<div class="screen">${SB()}${TOP('Opciones de ruta','go(\'s016\')')}<div class="body pad" style="padding-top:0">
+${[['Evitar peajes','Puede aumentar el tiempo',1],['Evitar autopistas','',0],['Evitar vías sin pavimentar','',1],['Priorizar aceras y cruces seguros','Para A pie y Bici',1]].map(([t,s,o])=>`<div class="row"><div class="tx"><b>${t}</b><small>${s}</small></div><div class="tog ${o?'on':''}" onclick="this.classList.toggle('on')"></div></div>`).join('')}
+<h3>Pico y placa · Armenia</h3><div class="row"><div class="tx"><b>Considerar pico y placa</b><small>Hoy restringe placas terminadas en 3 y 4</small></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+${field('Placa del vehículo','KTM 482')}
+<button class="btn pri" onclick="toast('Opciones aplicadas');go('s016')">Aplicar</button><button class="btn ghost" onclick="go('s016')">Cancelar</button></div></div>`},
+s018:{t:'Detalle transporte público',ui:'UI-018',rq:'RQ31, RQ32',h:()=>`<div class="screen">${SB()}${TOP('Transporte público','go(\'s016\')')}<div class="body pad" style="padding-top:0">
+<div class="card"><div style="display:flex;justify-content:space-between"><span class="t" style="font-size:22px;font-weight:800">24 min</span><span class="pill ok">Sale 9:48</span></div><p class="m">🚶 4 min › 🚌 Ruta 12 › 🚶 3 min · 1 transbordo</p></div>
+<h3>Recorrido</h3>${[['🚶','Camina a parada Calle 21','4 min · 300 m'],['🚌','Ruta 12 · Hacia Norte','Próximos: 9:48 · 9:58 · 10:08 · 6 paradas'],['🔁','Transbordo en Av. Bolívar','Ruta 3 · 2 paradas'],['🚶','Camina al destino','3 min · 220 m']].map(([e,n,d])=>`<div class="row" style="align-items:flex-start"><div class="av">${e}</div><div class="tx"><b>${n}</b><small>${d}</small></div></div>`).join('')}
+<button class="btn pri" onclick="state.mode='Transporte';go('s016')">Elegir esta opción</button></div></div>`},
+s019:{t:'Navegación paso a paso',ui:'UI-019',rq:'RQ17, RQ18, RQ46',h:()=>NAVSCR('')},
+s020:{t:'Alerta de tráfico',ui:'UI-020',rq:'RQ21, RQ22, RQ39, RQ47',h:()=>NAVSCR(`<div class="modal" style="align-items:flex-end;padding:14px 14px 120px;background:rgba(10,25,20,.25)"><div class="card"><div style="display:flex;gap:12px;align-items:center"><div class="av" style="background:#FDE7E7">💥</div><div><b>Accidente adelante en Cra. 14</b><br><small class="m">Demora estimada +9 min</small></div></div><p class="m" style="margin-top:10px">Vía alterna sugerida por Calle 18: ahorras 6 min.</p><div style="display:flex;gap:10px;margin-top:12px"><button class="btn grey sm" onclick="go('s019')">Mantener ruta</button><button class="btn pri sm" onclick="go('s021')">Tomar vía alterna</button></div></div></div>`)},
+s021:{t:'Ruta recalculada',ui:'UI-021',rq:'RQ19, RQ20, RQ40',h:()=>NAVSCR(`<div class="modal" style="align-items:flex-start;padding-top:200px;background:none"><div class="card" style="border-left:5px solid var(--p)"><b>🔄 Ruta recalculada</b><p class="m" style="margin-top:4px">Detectamos un desvío. Nueva hora de llegada: <b>9:53</b> (−6 min).</p><button class="btn pri sm" style="margin-top:12px" onclick="go('s019')">Aceptar</button></div></div>`)},
+s022:{t:'Llegando al destino',ui:'UI-022',rq:'RQ41, RQ42',h:()=>NAVSCR(`<div class="sheet" style="z-index:12;padding-bottom:30px"><div class="grab"></div><div class="center"><div style="font-size:44px">🏁</div><h2>Llegando a tu destino</h2><p class="m">A 200 m · Café Quindío Plaza<br>Cra. 14 #18-20, Armenia</p></div><button class="btn pri" onclick="toast('Viaje finalizado · 1,9 km · 9 min');go('s009')">Finalizar</button><button class="btn sec" onclick="toast('Guardado como favorito');go('s025')">⭐ Guardar como favorito</button></div>`,1)},
+s023:{t:'Reportar incidente',ui:'UI-023',rq:'RQ23, RQ24',h:()=>`<div class="screen">${SB()}${TOP('Reportar incidente','back()')}<div class="body pad" style="padding-top:0">
+<p class="m">¿Qué ves en la vía? Tu reporte alerta a otros conductores.</p>
+<div class="inc">${INCS.map(([e,n],i)=>`<div class="${state.inc==i?'on':''}" onclick="state.inc=${i};go('s023',1)"><span>${e}</span>${n}</div>`).join('')}</div>
+${state.inc!=null&&INCS[state.inc][2]?`<label class="f">Detalle</label><div class="chips">${INCS[state.inc][2].map((c,i)=>`<div class="chip ${i==0?'on':'o'}">${c}</div>`).join('')}</div>`:''}
+<div class="card" style="margin-top:16px;display:flex;gap:10px;align-items:center;box-shadow:none;background:var(--bg)"><span>📍</span><div style="flex:1"><b style="font-size:14px">Av. Bolívar con Calle 21</b><br><small class="m">Ubicación y hora (9:41) automáticas</small></div></div>
+<label class="f">Comentario (opcional)</label><input class="in" placeholder="Ej: carril derecho cerrado">
+<button class="btn pri" style="${state.inc==null?'opacity:.45':''}" onclick="if(state.inc!=null)go('s024')">Enviar reporte</button><button class="btn ghost" onclick="back()">Cancelar</button></div></div>`},
+s024:{t:'Reporte enviado',ui:'UI-024',rq:'RQ23',h:()=>`<div class="screen">${SB()}<div class="body pad" style="display:flex;flex-direction:column;justify-content:center;text-align:center">
+<div style="width:110px;height:110px;border-radius:50%;background:var(--pl);margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:54px;color:var(--p)">✓</div>
+<h2 style="font-size:24px;margin-top:20px">¡Reporte enviado!</h2><p class="m" style="margin-top:8px">Tu reporte de <b>${INCS[state.inc??0][1].toLowerCase()}</b> alerta a otros conductores cerca de Av. Bolívar. Gracias por ayudar 💚</p>
+<button class="btn pri" style="margin-top:30px" onclick="go(state.from||'s009')">Volver</button></div></div>`},
+s025:{t:'Favoritos',ui:'UI-025',rq:'RQ04, RQ33, RQ34',h:()=>`<div class="screen">${SB()}<div class="top"><h2 style="font-size:24px;padding-left:6px">Favoritos</h2><button class="back" onclick="go('s026')">＋</button></div><div class="body pad" style="padding-top:0">
+<div class="tabs"><div class="on">Guardados</div><div onclick="go('s027')">Historial</div></div>
+<div class="list" style="margin-top:6px">${[['🏠','Casa','Barrio La Castellana · 12 min'],['💼','Trabajo','Centro, Calle 20 #14 · 18 min'],['🎓','Universidad del Quindío','Cra. 15 Calle 12N · 9 min'],['☕','Café Quindío Plaza','Café · 6 min'],['⛽','EDS Terpel Av. 19','Gasolinera · 4 min']].map(([e,n,d])=>`<div class="it"><div class="av">${e}</div><div style="flex:1" onclick="go('s026')"><b>${n}</b><small>${d}</small></div><button class="btn sec sm" style="width:auto;padding:8px 14px" onclick="go('s015')">Ir</button></div>`).join('')}</div>
+<button class="btn out" onclick="go('s026')">＋ Agregar lugar</button></div>${NAV('Favoritos')}</div>`},
+s026:{t:'Agregar / editar lugar',ui:'UI-026',rq:'RQ33, RQ34, RQ37, RQ38',h:()=>`<div class="screen">${SB()}${TOP('Editar lugar','go(\'s025\')')}<div class="body pad" style="padding-top:0">
+${field('Nombre','Universidad del Quindío')}${field('Dirección','Cra. 15 Calle 12 Norte, Armenia')}
+<label class="f">Categoría</label><div class="chips" style="flex-wrap:wrap">${['🏠 Casa','💼 Trabajo','🎓 Universidad','📍 Otro'].map((c,i)=>`<div class="chip ${i==2?'on':'o'}">${c}</div>`).join('')}</div>
+<button class="btn pri" style="margin-top:26px" onclick="toast('Lugar guardado');go('s025')">Guardar</button><button class="btn out" style="color:var(--red)" onclick="go('s028')">Eliminar</button><button class="btn ghost" onclick="go('s025')">Cancelar</button></div></div>`},
+s027:{t:'Historial de destinos',ui:'UI-027',rq:'RQ35, RQ36',h:()=>`<div class="screen">${SB()}<div class="top"><h2 style="font-size:24px;padding-left:6px">Favoritos</h2></div><div class="body pad" style="padding-top:0">
+<div class="tabs"><div onclick="go('s025')">Guardados</div><div class="on">Historial</div></div>
+<div class="list" style="margin-top:6px">${[['Café Quindío Plaza','Hoy · 9:53'],['Universidad del Quindío','Ayer · 7:10'],['Terminal de Transportes','22 oct · 18:40'],['Unicentro Armenia','20 oct · 16:05']].map(([n,d])=>`<div class="it"><div class="av" style="background:var(--bg)">🕘</div><div style="flex:1"><b>${n}</b><small>${d}</small></div><button class="link" onclick="go('s015')">Ir</button><button class="back" style="margin-left:6px" onclick="go('s028')">🗑</button></div>`).join('')}</div>
+<button class="btn ghost" style="color:var(--red)" onclick="go('s028')">Borrar historial</button></div>${NAV('Favoritos')}</div>`},
+s028:{t:'Confirmar eliminación',ui:'UI-028',rq:'RQ36, RQ37',h:()=>`<div class="screen">${SB()}<div class="top"><h2 style="font-size:24px;padding-left:6px">Favoritos</h2></div><div class="body pad"><div class="list">${['Casa','Trabajo','Universidad del Quindío'].map(n=>`<div class="it"><div class="av">📍</div><b>${n}</b></div>`).join('')}</div></div>${NAV('Favoritos')}
+<div class="modal"><div class="card center"><div style="font-size:40px">🗑️</div><h3>¿Eliminar este lugar?</h3><p class="m">«Universidad del Quindío» se quitará de tus favoritos. No se puede deshacer.</p><button class="btn danger" onclick="toast('Lugar eliminado');go('s025')">Eliminar</button><button class="btn grey" onclick="go('s025')">Cancelar</button></div></div></div>`},
+s029:{t:'Perfil',ui:'UI-029',rq:'RQ03, RQ04',h:()=>`<div class="screen">${SB()}<div class="body pad">
+<div class="center" style="margin-top:10px"><div style="width:90px;height:90px;border-radius:50%;background:var(--p);color:#fff;font-size:34px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto">LG</div><h2 style="margin-top:10px">Laura Gómez</h2><p class="m">laura.gomez@uqvirtual.edu.co</p>
+<div style="display:flex;gap:10px;margin-top:14px">${[['48','viajes'],['312 km','recorridos'],['17','reportes']].map(([a,b])=>`<div class="card" style="flex:1;padding:10px"><b>${a}</b><br><small class="m">${b}</small></div>`).join('')}</div></div>
+<div style="margin-top:12px">${[['✏️','Editar perfil','s030'],['🛣️','Preferencias de ruta','s017'],['🔔','Notificaciones','s031'],['🔐','Permisos','s032']].map(([e,n,l])=>`<div class="row" style="cursor:pointer" onclick="go('${l}')"><div class="av">${e}</div><div class="tx"><b>${n}</b></div><span style="color:var(--mut)">›</span></div>`).join('')}</div>
+<button class="btn ghost" style="color:var(--red)" onclick="go('s001')">Cerrar sesión</button></div>${NAV('Perfil')}</div>`},
+s030:{t:'Editar perfil',ui:'UI-030',rq:'RQ03',h:()=>`<div class="screen">${SB()}${TOP('Editar perfil','go(\'s029\')')}<div class="body pad" style="padding-top:0">
+<div class="center"><div style="width:80px;height:80px;border-radius:50%;background:var(--p);color:#fff;font-size:30px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto">LG</div><button class="link" style="margin-top:6px">Cambiar foto</button></div>
+${field('Nombre','Laura Gómez')}${field('Teléfono','+57 310 555 0192')}${field('Correo','laura.gomez@uqvirtual.edu.co')}${field('Fecha de nacimiento','14/03/2003')}
+<button class="btn pri" onclick="toast('Perfil actualizado');go('s029')">Guardar</button><button class="btn ghost" onclick="go('s029')">Cancelar</button></div></div>`},
+s031:{t:'Configurar notificaciones',ui:'UI-031',rq:'RQ06, RQ42, RQ43, RQ44',h:()=>`<div class="screen">${SB()}${TOP('Notificaciones','go(\'s029\')')}<div class="body pad" style="padding-top:0">
+<p class="m">Los cambios se aplican al instante.</p>
+${[['Alertas de tráfico','Congestión en tus rutas',1],['Accidentes y cierres','',1],['Cambio de ruta','Cuando recalculamos',1],['Alerta de llegada','Avisar a 200 m del destino',1],['Clima en la ruta','',0]].map(([t,s,o])=>`<div class="row"><div class="tx"><b>${t}</b><small>${s}</small></div><div class="tog ${o?'on':''}" onclick="this.classList.toggle('on');toast('Preferencia guardada')"></div></div>`).join('')}
+<h3>Canal</h3><div class="row"><div class="tx"><b>Push</b></div><div class="check on"></div></div><div class="row"><div class="tx"><b>Correo</b></div><div class="check"></div></div></div></div>`},
+s032:{t:'Permisos de la app',ui:'UI-032',rq:'RQ05 · punto de dolor',h:()=>`<div class="screen">${SB()}${TOP('Permisos','go(\'s029\')')}<div class="body pad" style="padding-top:0">
+${[['📍','Ubicación','Al usar la app','Calcular rutas desde tu posición y mostrar tráfico cercano','ok'],['🔔','Notificaciones','Permitidas','Alertas de tráfico y aviso de llegada','ok'],['🎙️','Micrófono','No concedido','Búsqueda por voz','bad']].map(([e,n,s,d,c])=>`<div class="card" style="margin-top:12px"><div style="display:flex;gap:12px;align-items:center"><div class="av">${e}</div><div style="flex:1"><b>${n}</b><br><span class="pill ${c}">${s}</span></div></div><p class="m" style="margin-top:8px">${d}</p><button class="btn sec sm" style="margin-top:10px" onclick="toast('Abriendo ajustes del sistema…')">Cambiar permiso</button></div>`).join('')}</div></div>`},
+};
+const INCS=[['💥','Accidente',['Leve','Con heridos','Bloquea carril']],['🚗','Tráfico',['Moderado','Pesado','Detenido']],['🚧','Obra',null],['⛔','Vía cerrada',null],['👮','Control policial',null],['⚠️','Peligro',['Hueco','Objeto en vía','Derrumbe']]];
+const ROUTES={Auto:[['9 min','Por Av. Bolívar y Cra. 14','1,9 km','🟢 Tráfico fluido','🪙 Sin peajes','Más rápida',''],['12 min','Por Calle 18','2,4 km','🟠 Tráfico moderado','🪙 Sin peajes','',''],['15 min','Por Av. 19 (autopista)','3,8 km','🔴 Congestión','🪙 1 peaje $11.200','','⚠ Pico y placa aplica en tramo']],
+'A pie':[['24 min','Por Calle 21 · aceras amplias','1,7 km','🚶 Cruces seguros','⛅ Lluvia 16:00','Recomendada',''],['27 min','Por Parque de la Vida','1,9 km','🌳 Zona verde','','','']],
+Bici:[['8 min','Por Av. Bolívar','2,0 km','🚲 Ciclorruta parcial','⛰ Pendiente leve','Más rápida','⚠ 600 m sin ciclorruta'],['11 min','Por Calle 18','2,3 km','🚲 Ciclorruta completa','','Más segura','']],
+Transporte:[['24 min','Ruta 12 › Ruta 3','1 transbordo','🚌 Sale 9:48','💵 $2.700','Recomendada',''],['31 min','Ruta 7 directa','Sin transbordos','🚌 Sale 9:55','💵 $2.700','','']]};
+function MODES(t){return `<div class="tabs">${[['Auto','🚗 Auto'],['A pie','🚶 A pie'],['Bici','🚲 Bici'],['Transporte','🚌 Público']].map(([k,l])=>`<div class="${state.mode==k?'on':''}" onclick="state.mode='${k}';state.route=0;go('${t||'s015'}',1)">${l}</div>`).join('')}</div>`}
+function NAVSCR(over,arr){return `<div class="screen" style="background:var(--p)">${SB(1)}<div class="body" style="overflow:hidden">${MAP({route:RNAV,me:[192,560],pois:false,incident:1})}
+<div class="turn" style="padding-top:8px"><div class="big"><div class="arrow">${arr?'🏁':'↱'}</div><div>${arr?'200 m':'150 m'}<div style="font-size:16px;font-weight:600;opacity:.9">${arr?'Destino a la derecha':'Gira a la derecha en Calle 21'}</div></div></div><div style="margin-top:10px;font-size:13px;opacity:.85">Luego ↰ en Cra. 14</div></div>
+<button class="fab" style="right:14px;top:170px" onclick="state.voice=!state.voice;go('s019',1)">${state.voice?'🔊':'🔇'}</button>
+<button class="fab" style="right:14px;top:230px;background:#E8A317" onclick="state.from='s019';go('s023')">⚠️</button>
+<span class="pill" style="position:absolute;left:14px;top:176px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.15);z-index:4;font-size:14px">🚗 42 km/h</span>
+<div class="sheet" style="padding-bottom:30px"><div class="grab"></div><div style="display:flex;align-items:center;gap:10px"><div style="flex:1"><div style="font-size:24px;font-weight:800;color:var(--p)">${arr?'1 min':'7 min'}</div><small class="m">${arr?'0,2 km':'1,4 km'} · llegada 9:${arr?'53':'48'}</small></div>
+<button class="btn out sm" style="width:auto;padding:10px 12px" onclick="go('s016')">Ruta</button><button class="btn danger sm" style="width:auto;padding:10px 16px" onclick="go('s022')">Finalizar</button></div>
+<div style="display:flex;gap:8px;margin-top:12px"><button class="btn sec sm" onclick="go('s020')">Simular alerta</button><button class="btn sec sm" onclick="state.from='s019';go('s023')">⚠️ Reportar</button></div></div>
+</div>${over||''}</div>`}
+let hist=[],cur=null;
+function go(id,replace){if(!S[id])return;if(cur&&!replace&&cur!==id)hist.push(cur);if(id==='s009'||id==='s023'&&!state.from)state.from=state.from;cur=id;render();if(!PRINT)history.replaceState(null,'','#'+id);$('#jump').value=id}
+function back(){const p=hist.pop();if(p){cur=p;render()}else go('s009')}
+function render(){const s=S[cur];$('#phone').innerHTML=s.h()+`<div class="dev">${s.ui} · ${s.t}<br>${s.rq}</div><button class="devbtn" onclick="document.body.classList.toggle('devon')">RQ</button><div class="home-ind"></div>`}
+function toast(m){if(PRINT)return;setTimeout(()=>{const t=document.createElement('div');t.className='toast';t.innerHTML='✅ '+m;$('#phone').appendChild(t);setTimeout(()=>t.remove(),2200)},60)}
+document.addEventListener('keydown',e=>{if(e.key==='?')document.body.classList.toggle('devon')});
+$('#jump').innerHTML=Object.entries(S).map(([k,v])=>`<option value="${k}">${v.ui} · ${v.t}</option>`).join('');
+const Q=new URLSearchParams(location.search),PRINT=Q.has('print');
+if(PRINT){document.body.classList.add('print');['mode','inc','res'].forEach(k=>{if(Q.has(k))state[k]=k=='inc'?+Q.get(k):Q.get(k)});if(Q.has('route'))state.route=+Q.get('route');if(Q.has('dev'))document.body.classList.add('devon')}
+// Patch: in report screen, remember origin
+const _go=go;
+go(location.hash.slice(1)||Q.get('s')||'s001',1);
+</script></body></html>
