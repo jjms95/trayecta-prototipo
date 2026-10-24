@@ -10,6 +10,8 @@ body{background:linear-gradient(135deg,#0b3d2e,#0B6E4F 55%,#1c8f6b);display:flex
 .side{color:#e8f6f0;max-width:280px;font-size:14px;line-height:1.5}
 .side h1{font-size:26px;margin-bottom:8px}.side a{color:#fff}
 .side select{width:100%;padding:8px;border-radius:8px;margin-top:10px}
+.side-logo{width:112px;height:112px;background:#fff;border-radius:24px;padding:10px;margin:0 0 14px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.side-logo img{width:100%;height:100%;object-fit:contain;display:block}
 .phone{width:390px;height:844px;border-radius:52px;background:#fff;position:relative;overflow:hidden;box-shadow:0 0 0 12px #111,0 0 0 14px #333,0 30px 80px rgba(0,0,0,.5)}
 .screen{position:absolute;inset:0;display:flex;flex-direction:column;background:#fff;animation:in .28s ease}
 @keyframes in{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
@@ -108,7 +110,7 @@ body.print .phone{zoom:1.3333}
 </style></head>
 <body>
 <div class="side" id="side">
-<img src="logo.png" alt="Logo Trayecta" style="width:120px;background:#fff;border-radius:22px;padding:8px;margin-bottom:10px">
+<div class="side-logo"><img src="logo.png" alt="Logo Trayecta"></div>
 <h1>Trayecta</h1>
 <p>Prototipo navegable · Usabilidad – Parcial 2<br>Grupo 1 · Universidad del Quindío<br><small>Logo oficial de Trayecta</small></p>
 <p style="margin-top:12px">Toca los botones dentro del teléfono para navegar. Pulsa <b>?</b> (o el botón «RQ» del teléfono) para ver el ID de pantalla y los requisitos que cubre.</p>
@@ -150,17 +152,17 @@ const field=(l,v,ph,t='text',f)=>`<label class="f">${l}</label><input class="in 
 
 const S={
 s001:{t:'Bienvenida',ui:'UI-001',rq:'RQ01, RQ02',h:()=>`<div class="screen" style="background:linear-gradient(170deg,#0B6E4F,#0a4f3a)">${SB(1)}<div class="body" style="display:flex;flex-direction:column;padding:0 26px 40px;color:#fff">
-<div style="flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center"><div class="logo" style="width:190px;height:170px;border-radius:36px;padding:12px"><img src="logo.png" alt="Logo Trayecta" style="width:100%;height:100%;object-fit:contain"></div><h1 style="font-size:36px;margin-top:22px;letter-spacing:-.5px">Trayecta</h1><p style="opacity:.85;margin-top:8px;font-size:16px;line-height:1.5">Llega mejor por Armenia y el Quindío.<br>Tráfico en tiempo real, rutas y alertas.</p></div>
+<div style="flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center"><div class="logo" style="width:168px;height:168px;border-radius:36px;padding:14px;margin:0 auto"><img src="logo.png" alt="Logo Trayecta" style="width:100%;height:100%;object-fit:contain;display:block"></div><h1 style="font-size:36px;margin-top:22px;letter-spacing:-.5px">Trayecta</h1><p style="opacity:.85;margin-top:8px;font-size:16px;line-height:1.5">Llega mejor por Armenia y el Quindío.<br>Tráfico en tiempo real, rutas y alertas.</p></div>
 <button class="btn" style="background:#fff;color:var(--p)" onclick="go('s003')">Iniciar sesión</button><button class="btn" style="background:rgba(255,255,255,.14);color:#fff;border:1.5px solid rgba(255,255,255,.4)" onclick="go('s002')">Registrarse</button>
 <p class="center" style="font-size:12px;opacity:.7;margin-top:18px">Al continuar aceptas los Términos y la Política de privacidad</p></div></div>`},
-s002:{t:'Registrarse',ui:'UI-002',rq:'RQ01',h:()=>`<div class="screen">${SB()}${TOP('Crear cuenta')}<div class="body pad" style="padding-top:0"><img src="logo.png" alt="Trayecta" style="width:64px;display:block;margin:2px 0 6px">
+s002:{t:'Registrarse',ui:'UI-002',rq:'RQ01',h:()=>`<div class="screen">${SB()}${TOP('Crear cuenta')}<div class="body pad" style="padding-top:0"><img src="logo.png" alt="Trayecta" style="width:56px;height:56px;object-fit:contain;display:block;margin:4px 0 8px;background:#F5F8F7;border-radius:14px;padding:6px">
 <p class="m">Guarda tus lugares y preferencias de ruta.</p>
 ${field('Nombre completo','Laura Gómez')}${field('Correo electrónico','laura.gomez@uqvirtual.edu.co','','email',1)}${field('Contraseña','••••••••','','password')}${field('Confirmar contraseña','••••••••','','password')}
 <p style="font-size:12px;color:var(--p);margin-top:8px">✓ Mínimo 8 caracteres · ✓ Las contraseñas coinciden</p>
 <button class="btn pri" onclick="go('s006')">Crear cuenta</button><div class="div">o</div>
 <button class="btn out g" onclick="go('s006')"><b style="color:#4285F4">G</b> Continuar con Google</button>
 <p class="center" style="margin-top:16px;font-size:14px">¿Ya tienes cuenta? <button class="link" onclick="go('s003')">Iniciar sesión</button></p></div></div>`},
-s003:{t:'Iniciar sesión',ui:'UI-003',rq:'RQ02',h:()=>`<div class="screen">${SB()}${TOP('Iniciar sesión')}<div class="body pad" style="padding-top:0"><img src="logo.png" alt="Trayecta" style="width:64px;display:block;margin:2px 0 6px">
+s003:{t:'Iniciar sesión',ui:'UI-003',rq:'RQ02',h:()=>`<div class="screen">${SB()}${TOP('Iniciar sesión')}<div class="body pad" style="padding-top:0"><img src="logo.png" alt="Trayecta" style="width:56px;height:56px;object-fit:contain;display:block;margin:4px 0 8px;background:#F5F8F7;border-radius:14px;padding:6px">
 <p class="m">Bienvenido de nuevo 👋</p>
 ${field('Correo electrónico','laura.gomez@uqvirtual.edu.co','','email')}${field('Contraseña','••••••••','','password',1)}
 <p style="text-align:right;margin-top:10px"><button class="link" onclick="go('s004')">¿Olvidaste tu contraseña?</button></p>
